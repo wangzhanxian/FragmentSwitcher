@@ -4,6 +4,7 @@
 # 该库有一下特点：  
 1，支持配置默认展示的Fragment；  
 2，支持Fragment跨Activity跳转，弱化了Activity，避免过多的创建Activity；  
+3，避免同一个Fragment重复入栈，类似SingleTask模式；  
 
 # 使用
 
