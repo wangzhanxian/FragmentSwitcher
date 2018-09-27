@@ -1,0 +1,2 @@
+# FragmentSwitcher
+一款简易的自动管理fragment回退栈的切换工具
