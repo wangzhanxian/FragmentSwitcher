@@ -11,11 +11,11 @@
 	allprojects {  
 		repositories {  
 			...  
-			maven { url 'https://jitpack.io' }  
-		}  
-	}    
+			maven { url 'https://jitpack.io' }    
+		}    
+	}      
 在需要依赖的地方添加：    
-	dependencies {
+	dependencies {  
 	        implementation 'com.github.wangzhanxian:FragmentSwitcher:v1.0.0'  
 	}    
 
