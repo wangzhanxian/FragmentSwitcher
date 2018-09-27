@@ -17,7 +17,7 @@
 	}      
 在需要依赖的地方添加：    
 	dependencies {  
-	        implementation 'com.github.wangzhanxian:FragmentSwitcher:v1.0.0'  
+	        implementation 'com.github.wangzhanxian:FragmentSwitcher:v1.0.1'
 	}    
 
 
