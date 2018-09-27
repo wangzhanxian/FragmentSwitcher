@@ -35,7 +35,7 @@ public class FragmentSwitcher extends FrameLayout {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        UI.remove(this);
+        SwitchHelper.remove(this);
     }
 
     private void init(AttributeSet attrs) {
@@ -106,7 +106,7 @@ public class FragmentSwitcher extends FrameLayout {
      */
     public void goback(Bundle bundle) {
         if (checkCanSwitch()) {
-            UI.goBack(this, bundle);
+            SwitchHelper.goBack(this, bundle);
         }
     }
 
@@ -118,7 +118,7 @@ public class FragmentSwitcher extends FrameLayout {
      */
     public void switchFragment(String fragmentName, Bundle extras) {
         if (checkCanSwitch()) {
-            UI.switchFragment(this, fragmentName, extras);
+            SwitchHelper.switchFragment(this, fragmentName, extras);
         }
     }
 
@@ -130,7 +130,7 @@ public class FragmentSwitcher extends FrameLayout {
      */
     public void switchFragment(Intent intent, boolean useDefaultFragment) {
         if (checkCanSwitch()) {
-            UI.switchFragment(this, intent, useDefaultFragment);
+            SwitchHelper.switchFragment(this, intent, useDefaultFragment);
         }
     }
 }

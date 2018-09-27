@@ -12,7 +12,7 @@ import com.wzx.app.fastui.utils.ComnUtil;
 import java.util.HashMap;
 import java.util.List;
 
-public class UI {
+public class SwitchHelper {
 
     private static HashMap<FragmentSwitcher,UIContainer> map = new HashMap<>();
 
