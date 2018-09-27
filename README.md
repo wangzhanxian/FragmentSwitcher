@@ -1,9 +1,9 @@
 # FragmentSwitcher
 一款简易的自动管理fragment回退栈的切换工具，可以快速的实现多Activity多Fragment界面搭建，一个模块一个Activity通过切换Fragment实现UI界面切换。
 
-# 该库有一下特点：
-1，支持配置默认展示的Fragment；
-2，支持Fragment跨Activity跳转，弱化了Activity，避免过多的创建Activity；
+# 该库有一下特点：  
+1，支持配置默认展示的Fragment；  
+2，支持Fragment跨Activity跳转，弱化了Activity，避免过多的创建Activity；  
 
 # 使用
 
