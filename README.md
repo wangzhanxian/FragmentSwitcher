@@ -7,6 +7,19 @@
 
 # 使用
 
+在根build.gradle中配置：
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+在需要依赖的地方添加：
+	dependencies {
+	        implementation 'com.github.wangzhanxian:FragmentSwitcher:v1.0.0'
+	}
+
+
 通过在布局文件中配置自定义的FragmentSwitcher（继承自FrameLayout）即可，该自定义View相当于Fagment切换的容器，
 你也可以在布局文件中配置默认启动的Fragment，如下：
 <com.wzx.app.fastui.FragmentSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
