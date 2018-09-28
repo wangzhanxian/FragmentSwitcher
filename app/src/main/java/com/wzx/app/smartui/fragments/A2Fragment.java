@@ -1,10 +1,12 @@
 package com.wzx.app.smartui.fragments;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 
 import com.wzx.app.fastui.annotions.Host;
 import com.wzx.app.smartui.AActivity;
+import com.wzx.app.smartui.BActivity;
 import com.wzx.app.smartui.LayoutId;
 import com.wzx.app.smartui.R;
 
@@ -22,7 +24,7 @@ public class A2Fragment extends BaseFragment {
         findViewById(R.id.tv_text).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActivity.switchFragment(B1Fragment.class,null);
+                startActivity(new Intent(mActivity, BActivity.class));
             }
         });
     }

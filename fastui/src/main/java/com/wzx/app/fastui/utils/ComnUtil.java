@@ -8,11 +8,12 @@ import com.wzx.app.fastui.annotions.Host;
 public class ComnUtil {
 
     public static Class<? extends FragmentActivity> getContainerActivity(@NonNull Object object) {
-        Host annotation = object.getClass().getAnnotation(Host.class);
-        return annotation != null? annotation.value():null;
+        Class clazz = object instanceof Class ? (Class) object : object.getClass();
+        Host annotation = (Host) clazz.getAnnotation(Host.class);
+        return annotation != null ? annotation.value() : null;
     }
 
-    public static Class loadClass(ClassLoader loader,String className){
+    public static Class loadClass(ClassLoader loader, String className) {
         try {
             return loader.loadClass(className);
         } catch (ClassNotFoundException e) {
