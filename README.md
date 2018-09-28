@@ -46,9 +46,9 @@ fs_switcher.goback();
 
 # 注意
 
-1,如果你的容器Activity是SingleTask等启动模式时，需要在onNewIntent方法进行处理;
-2,目前一个Activity只支持设定一个容器;
-3,如果需要从非容器Activity中跳转到容器中指定fragment，可以调用:
-SwitchHelper.checkHostOpen(this,targetFragmentClass,extras);
-或者
-SwitchHelper.checkHostOpen(this,targetFragmentName,extras);
+1,如果你的容器Activity是SingleTask等启动模式时，需要在onNewIntent方法进行处理;  
+2,目前一个Activity只支持设定一个容器;  
+3,如果需要从非容器Activity中跳转到容器中指定fragment，可以调用:  
+SwitchHelper.checkHostOpen(this,targetFragmentClass,extras);  
+或者  
+SwitchHelper.checkHostOpen(this,targetFragmentName,extras);  
