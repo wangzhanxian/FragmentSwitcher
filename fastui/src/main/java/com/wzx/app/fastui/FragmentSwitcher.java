@@ -18,7 +18,7 @@ public class FragmentSwitcher extends FrameLayout {
     /**
      * 可以开始切换标记
      */
-    private boolean start;
+    private boolean prepared;
 
     private UIContainer container;
 
@@ -67,9 +67,9 @@ public class FragmentSwitcher extends FrameLayout {
     }
 
 
-    public FragmentSwitcher start() {
-        if (!start) {
-            start = true;
+    public FragmentSwitcher prepare() {
+        if (!prepared) {
+            prepared = true;
             switchFragment(container.getActivity().getIntent(), true);
         }
         return this;
@@ -80,7 +80,7 @@ public class FragmentSwitcher extends FrameLayout {
     }
 
     public boolean checkCanSwitch() {
-        return start;
+        return prepared;
     }
 
     public Fragment getCurFragment() {

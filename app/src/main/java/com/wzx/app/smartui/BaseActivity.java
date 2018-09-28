@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 
 import com.wzx.app.fastui.FragmentSwitcher;
+import com.wzx.app.fastui.SwitchHelper;
 import com.wzx.app.smartui.fragments.BaseFragment;
 
 @LayoutId(R.layout.activity_base)
@@ -22,13 +23,17 @@ public abstract class BaseActivity extends FragmentActivity {
 
         setContentView(Utils.getLayoutId(this));
         fs_switcher = findViewById(R.id.fs_switcher);
-        fs_switcher.setDefalutFragmentName(getDefaultFragmentName()).start();
+        if (fs_switcher != null) {
+            fs_switcher.setDefalutFragmentName(getDefaultFragmentName()).prepare();
+        }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        fs_switcher.switchFragment(intent,false);
+        if (fs_switcher != null) {
+            fs_switcher.switchFragment(intent, false);
+        }
     }
 
     /**
@@ -41,11 +46,17 @@ public abstract class BaseActivity extends FragmentActivity {
     }
 
     public void switchFragment(@NonNull Class<? extends BaseFragment> targetFragmentClass, Bundle extras) {
-        fs_switcher.switchFragment(targetFragmentClass.getName(),extras);
+        if (fs_switcher != null) {
+            fs_switcher.switchFragment(targetFragmentClass.getName(), extras);
+        }else {
+            SwitchHelper.checkHostOpen(this,targetFragmentClass,extras);
+        }
     }
 
     public void switchToLastFragment() {
-        fs_switcher.goback();
+        if (fs_switcher != null) {
+            fs_switcher.goback();
+        }
     }
 
     @Override

@@ -51,17 +51,6 @@ public class UIContainer {
         return activity.getSupportFragmentManager();
     }
 
-    Fragment ensureFragment(String fragmentName){
-        Fragment fragment = getFragmentManager().findFragmentByTag(fragmentName);
-        if (fragment == null) {
-            try {
-                fragment = (Fragment) activity.getClassLoader().loadClass(fragmentName).newInstance();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return fragment;
-    }
 
     Fragment getFirstFragment(){
         return getStackSize() != 0? stack.getFirst():null;

@@ -17,7 +17,7 @@
 	}      
 在需要依赖的地方添加：    
 	dependencies {  
-	        implementation 'com.github.wangzhanxian:FragmentSwitcher:1.0.2'
+	        implementation 'com.github.wangzhanxian:FragmentSwitcher:1.0.3'
 	}    
 
 
@@ -31,7 +31,7 @@
 	app:defaultFragmentName="com.wzx.app.smartui.fragments.MainFragment" />  
 
 也可以在代码中设置，如下：  
-fs_switcher.setDefalutFragmentName(getDefaultFragmentName()).start();  
+fs_switcher.setDefalutFragmentName(getDefaultFragmentName()).prepare();
 
 切换Fragment 如下：  
 fs_switcher.switchFragment(targetFragmentClass.getName(),extras);  
@@ -44,4 +44,11 @@ fs_switcher.goback();
 
 其他操作可自行参照BasesActivity。  
 
-如果你的容器Activity是SingleTask等启动模式时，需要在onNewIntent方法进行处理；  
+# 注意
+
+1,如果你的容器Activity是SingleTask等启动模式时，需要在onNewIntent方法进行处理;
+2,目前一个Activity只支持设定一个容器;
+3,如果需要从非容器Activity中跳转到容器中指定fragment，可以调用:
+SwitchHelper.checkHostOpen(this,targetFragmentClass,extras);
+或者
+SwitchHelper.checkHostOpen(this,targetFragmentName,extras);

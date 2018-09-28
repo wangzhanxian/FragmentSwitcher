@@ -11,4 +11,13 @@ public class ComnUtil {
         Host annotation = object.getClass().getAnnotation(Host.class);
         return annotation != null? annotation.value():null;
     }
+
+    public static Class loadClass(ClassLoader loader,String className){
+        try {
+            return loader.loadClass(className);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

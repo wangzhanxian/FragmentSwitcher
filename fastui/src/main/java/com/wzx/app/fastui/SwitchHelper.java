@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.wzx.app.fastui.utils.ComnUtil;
 
@@ -70,8 +71,8 @@ public class SwitchHelper {
 
     private static void doSwitch(UIContainer container, String fragmentName, Bundle extras,boolean switchLast,boolean reuseStack,boolean useAnim) {
         if (fragmentName != null) {
-            Fragment fragment = container.ensureFragment(fragmentName);
-            if (fragment != null && checkHostOpen(container.getActivity(),fragment,extras)) {
+            Fragment fragment = ensureFragment(container.getActivity(),fragmentName);
+            if (fragment != null && checkHostOpen(container.getActivity(),fragment.getClass(),extras)) {
                 // 添加参数
                 if (extras != null) {
                     fragment.setArguments(extras);
@@ -113,15 +114,35 @@ public class SwitchHelper {
         }
     }
 
-    private static boolean checkHostOpen(FragmentActivity activity,Fragment fragment,Bundle extras){
-        Class<? extends FragmentActivity> hostActClass = ComnUtil.getContainerActivity(fragment);
+   static Fragment ensureFragment(FragmentActivity activity,String fragmentName){
+        Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(fragmentName);
+        if (fragment == null) {
+            try {
+                fragment = (Fragment) ComnUtil.loadClass(activity.getClassLoader(),fragmentName).newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return fragment;
+    }
+
+
+    public static boolean checkHostOpen(FragmentActivity activity, String targetFragmentName, Bundle extras){
+        return checkHostOpen(activity,ComnUtil.loadClass(activity.getClassLoader(), targetFragmentName),extras);
+
+    }
+    public static boolean checkHostOpen(FragmentActivity activity, Class fragmentClass, Bundle extras){
+        if (fragmentClass ==null){
+            return false;
+        }
+        Class<? extends FragmentActivity> hostActClass = ComnUtil.getContainerActivity(fragmentClass);
         if (hostActClass == null){
             hostActClass = activity.getClass();
         }
         boolean isCurHost = TextUtils.equals(hostActClass.getName(),activity.getClass().getName());
         if (!isCurHost){
             Intent intent = new Intent(activity,hostActClass);
-            intent.putExtra(FRAGMENT_CLASS_NAME, fragment.getClass().getName());
+            intent.putExtra(FRAGMENT_CLASS_NAME, fragmentClass.getName());
             if (extras != null){
                 intent.putExtra(FRAGMENT_EXTRA_BUNDLE, extras);
             }
@@ -129,6 +150,7 @@ public class SwitchHelper {
         }
         return isCurHost;
     }
+
 
     public static void goBack(FragmentSwitcher containerView, Bundle bundle){
         if (!containerView.checkCanSwitch()){
