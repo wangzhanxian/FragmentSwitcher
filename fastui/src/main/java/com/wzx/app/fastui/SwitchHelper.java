@@ -6,12 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.wzx.app.fastui.utils.ComnUtil;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class SwitchHelper {
 
@@ -72,7 +70,7 @@ public class SwitchHelper {
     private static void doSwitch(UIContainer container, String fragmentName, Bundle extras,boolean switchLast,boolean reuseStack,boolean useAnim) {
         if (fragmentName != null) {
             Fragment fragment = ensureFragment(container.getActivity(),fragmentName);
-            if (fragment != null && checkHostOpen(container.getActivity(),fragment.getClass(),extras)) {
+            if (fragment != null && checkHostAndOpen(container.getActivity(),fragment.getClass(),extras)) {
                 // 添加参数
                 if (extras != null) {
                     fragment.setArguments(extras);
@@ -89,7 +87,7 @@ public class SwitchHelper {
                         transaction.setCustomAnimations(R.anim.anim_enter_left_to_right, R.anim.anim_exit_left_to_right);
                     }
                 }
-                hideAllFragment(transaction,container.getFragmentManager().getFragments());
+                hideAllFragment(transaction,container,switchLast);
                 if (!fragment.isAdded()) {
                     transaction.add(container.getContainerId(), fragment, fragmentName);
                 } else {
@@ -106,9 +104,15 @@ public class SwitchHelper {
         }
     }
 
-    private static void hideAllFragment(FragmentTransaction transaction, List<Fragment> fragments){
-        for (Fragment fragment:fragments) {
-            if (!fragment.isHidden()){
+    private static void hideAllFragment(FragmentTransaction transaction, UIContainer container, boolean switchLast){
+        Fragment curFragment = null;
+        if (switchLast){
+            curFragment = container.getCurFragment();
+        }
+        for (Fragment fragment:container.getFragmentManager().getFragments()) {
+            if (fragment != null && fragment == curFragment){
+                transaction.remove(curFragment);
+            }else if (!fragment.isHidden()){
                 transaction.hide(fragment);
             }
         }
@@ -127,11 +131,11 @@ public class SwitchHelper {
     }
 
 
-    public static boolean checkHostOpen(FragmentActivity activity, String targetFragmentName, Bundle extras){
-        return checkHostOpen(activity,ComnUtil.loadClass(activity.getClassLoader(), targetFragmentName),extras);
+    public static boolean checkHostAndOpen(FragmentActivity activity, String targetFragmentName, Bundle extras){
+        return checkHostAndOpen(activity,ComnUtil.loadClass(activity.getClassLoader(), targetFragmentName),extras);
 
     }
-    public static boolean checkHostOpen(FragmentActivity activity, Class fragmentClass, Bundle extras){
+    public static boolean checkHostAndOpen(FragmentActivity activity, Class fragmentClass, Bundle extras){
         if (fragmentClass ==null){
             return false;
         }

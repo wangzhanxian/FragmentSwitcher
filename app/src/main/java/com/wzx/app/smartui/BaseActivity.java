@@ -46,10 +46,10 @@ public abstract class BaseActivity extends FragmentActivity {
     }
 
     public void switchFragment(@NonNull Class<? extends BaseFragment> targetFragmentClass, Bundle extras) {
-        if (fs_switcher != null) {
-            fs_switcher.switchFragment(targetFragmentClass.getName(), extras);
-        }else {
-            SwitchHelper.checkHostOpen(this,targetFragmentClass,extras);
+        if (SwitchHelper.checkHostAndOpen(this,targetFragmentClass,extras)){
+            if (fs_switcher != null) {
+                fs_switcher.switchFragment(targetFragmentClass.getName(), extras);
+            }
         }
     }
 
@@ -61,9 +61,11 @@ public abstract class BaseActivity extends FragmentActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        BaseFragment fragment = (BaseFragment) fs_switcher.getCurFragment();
-        if (fragment!=null){
-            return fragment.onKeyDown(keyCode,event);
+        if (fs_switcher != null) {
+            BaseFragment fragment = (BaseFragment) fs_switcher.getCurFragment();
+            if (fragment != null) {
+                return fragment.onKeyDown(keyCode, event);
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
