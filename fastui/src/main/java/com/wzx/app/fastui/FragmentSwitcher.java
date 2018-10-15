@@ -117,9 +117,7 @@ public class FragmentSwitcher extends FrameLayout {
      * @param extras
      */
     public void switchFragment(String fragmentName, Bundle extras) {
-        if (checkCanSwitch()) {
-            SwitchHelper.switchFragment(this, fragmentName, extras);
-        }
+        SwitchHelper.switchFragment(this, fragmentName, extras);
     }
 
     /**
@@ -129,8 +127,6 @@ public class FragmentSwitcher extends FrameLayout {
      * @param useDefaultFragment
      */
     public void switchFragment(Intent intent, boolean useDefaultFragment) {
-        if (checkCanSwitch()) {
-            SwitchHelper.switchFragment(this, intent, useDefaultFragment);
-        }
+        SwitchHelper.switchFragment(this, intent, useDefaultFragment);
     }
 }
