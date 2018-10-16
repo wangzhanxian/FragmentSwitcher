@@ -15,12 +15,12 @@ import android.widget.FrameLayout;
 public class FragmentSwitcher extends FrameLayout {
 
 
-    /**
-     * 可以开始切换标记
-     */
-    private boolean prepared;
-
     private UIContainer container;
+
+    /**
+     * 是否可以切换
+     */
+    private boolean canSwitch;
 
     public FragmentSwitcher(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -32,19 +32,16 @@ public class FragmentSwitcher extends FrameLayout {
         init(attrs);
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        SwitchHelper.remove(this);
-    }
 
     private void init(AttributeSet attrs) {
-        String defalutFragmentName = null;
+        String defalutFragmentName;
         TypedArray typedArray = null;
         try {
             typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.FragmentSwitcher);
-            /**-------------获取默认fragment类名------------*/
+            //获取默认fragment类名
             defalutFragmentName = typedArray.getString(R.styleable.FragmentSwitcher_defaultFragmentName);
+            //是否可以切换，默认可以切换
+            canSwitch = typedArray.getBoolean(R.styleable.FragmentSwitcher_switch_enable,true);
         } finally {
             if (typedArray != null) {
                 typedArray.recycle();
@@ -66,12 +63,8 @@ public class FragmentSwitcher extends FrameLayout {
         return this;
     }
 
-
-    public FragmentSwitcher prepare() {
-        if (!prepared) {
-            prepared = true;
-            switchFragment(container.getActivity().getIntent(), true);
-        }
+    public FragmentSwitcher setSwitchEnable(boolean switchEnable){
+        canSwitch = switchEnable;
         return this;
     }
 
@@ -80,7 +73,7 @@ public class FragmentSwitcher extends FrameLayout {
     }
 
     public boolean checkCanSwitch() {
-        return prepared;
+        return canSwitch;
     }
 
     public Fragment getCurFragment() {
@@ -105,9 +98,7 @@ public class FragmentSwitcher extends FrameLayout {
      * @param bundle
      */
     public void goback(Bundle bundle) {
-        if (checkCanSwitch()) {
-            SwitchHelper.goBack(this, bundle);
-        }
+        SwitchHelper.goBack(this, bundle);
     }
 
     /**
@@ -117,7 +108,17 @@ public class FragmentSwitcher extends FrameLayout {
      * @param extras
      */
     public void switchFragment(String fragmentName, Bundle extras) {
-        SwitchHelper.switchFragment(this, fragmentName, extras);
+        SwitchHelper.switchFragment(container.getActivity(),this, fragmentName, extras);
+    }
+
+    /**
+     * 根据类名切换
+     *
+     * @param fragmentClass
+     * @param extras
+     */
+    public void switchFragment(Class<? extends Fragment> fragmentClass, Bundle extras) {
+        SwitchHelper.switchFragment(container.getActivity(),this, fragmentClass, extras);
     }
 
     /**
@@ -127,6 +128,6 @@ public class FragmentSwitcher extends FrameLayout {
      * @param useDefaultFragment
      */
     public void switchFragment(Intent intent, boolean useDefaultFragment) {
-        SwitchHelper.switchFragment(this, intent, useDefaultFragment);
+        SwitchHelper.switchFragment(container.getActivity(),this, intent, useDefaultFragment);
     }
 }

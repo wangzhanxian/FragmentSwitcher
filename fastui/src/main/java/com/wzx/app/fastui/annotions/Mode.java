@@ -1,7 +1,6 @@
 package com.wzx.app.fastui.annotions;
 
-
-import android.support.v4.app.FragmentActivity;
+import com.wzx.app.fastui.LaunchMode;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,6 +13,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Host {
-    Class<? extends FragmentActivity> value();
+public @interface Mode {
+    @LaunchMode int value() default LaunchMode.SINGLETASK;
 }

@@ -5,6 +5,10 @@ import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
+
+import com.wzx.app.fastui.utils.ComnUtil;
 
 import java.util.LinkedList;
 
@@ -16,7 +20,8 @@ public class UIContainer {
 
     private String defaultFragmentName;
 
-    private @IdRes int containerId;
+    private @IdRes
+    int containerId;
 
     private Fragment curFragment;
 
@@ -47,54 +52,64 @@ public class UIContainer {
         return this;
     }
 
-    FragmentManager getFragmentManager(){
+    FragmentManager getFragmentManager() {
         return activity.getSupportFragmentManager();
     }
 
 
-    Fragment getFirstFragment(){
-        return getStackSize() != 0? stack.getFirst():null;
+    Fragment getFirstFragment() {
+        return getStackSize() != 0 ? stack.getFirst() : null;
     }
 
-    Fragment getCurFragment(){
+    Fragment getCurFragment() {
         return curFragment;
     }
 
-    UIContainer setCurFragment(Fragment fragment){
+    UIContainer setCurFragment(Fragment fragment) {
         curFragment = fragment;
         return this;
     }
 
-    Fragment getSwitchLastFragment(){
-        return getStackSize() > 1? stack.get(getStackSize()-2):null;
+    Fragment getSwitchLastFragment() {
+        return getStackSize() > 1 ? stack.get(getStackSize() - 2) : null;
     }
 
 
-    int getStackSize(){
+    int getStackSize() {
         return stack.size();
     }
 
-    UIContainer addToStack(Fragment fragment, boolean reuseStack){
-        if (reuseStack){
-            int index = stack.indexOf(fragment);
-            if (index >= 0){
-                while (getStackSize()-1 >index){
-                    stack.removeLast();
-                }
-            }else {
-                stack.add(fragment);
+    Fragment isSwitchLast(Fragment fragment) {
+        boolean reuseTask = ComnUtil.getLaunchMode(fragment) == LaunchMode.SINGLETASK;
+        for (Fragment stackFragment : stack) {
+            if (stackFragment == fragment || (reuseTask && TextUtils.equals(stackFragment.getClass().getName(), fragment.getClass().getName()))) {
+                return stackFragment;
             }
-        }else {
-            stack.add(fragment);
+        }
+        return null;
+    }
+
+    UIContainer addToStack(Fragment targetFragment, FragmentTransaction transaction) {
+        stack.add(targetFragment);
+        if (!targetFragment.isAdded()) {
+            transaction.add(getContainerId(), targetFragment);
+        } else {
+            transaction.show(targetFragment);
         }
         return this;
     }
 
-    UIContainer popStack(){
-        if (getStackSize()>0){
-            stack.removeLast();
+    UIContainer popStack(Fragment targetFragment, FragmentTransaction transaction) {
+        while (getStackSize() > 0) {
+            Fragment last = stack.getLast();
+            if (last != targetFragment) {
+                stack.removeLast();
+                transaction.remove(last);
+            } else {
+                transaction.show(targetFragment);
+                break;
+            }
         }
-       return this;
+        return this;
     }
-
 }

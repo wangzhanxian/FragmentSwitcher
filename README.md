@@ -4,7 +4,7 @@
 # 该库有一下特点：  
 1，支持配置默认展示的Fragment；  
 2，支持Fragment跨Activity跳转，弱化了Activity，避免过多的创建Activity；  
-3，避免同一个Fragment重复入栈，类似SingleTask模式；  
+3，支持Fragment两种入栈模式，可以通过@Mode()进行配置， LaunchMode.SINGLETASK:栈内复用，LaunchMode.STANDRAD：多实例模式，默认是栈内复用；
 
 # 使用
 
@@ -31,16 +31,23 @@
 	app:defaultFragmentName="com.wzx.app.smartui.fragments.MainFragment" />  
 
 也可以在代码中设置，如下：  
-fs_switcher.setDefalutFragmentName(getDefaultFragmentName()).prepare();
+fs_switcher.setDefalutFragmentName(getDefaultFragmentName());
 
 切换Fragment 如下：  
-fs_switcher.switchFragment(targetFragmentClass.getName(),extras);  
-只需要两个参数，要开启的Fragment类名和要传递的参数；  
+fs_switcher.switchFragment(targetFragmentClass.getName(),extras);
+fs_switcher.switchFragment(targetFragmentClass,extras);
+fs_switcher.switchFragment(intent，useDefaultFragment);
+或者
+SwitchHelper.switchFragment(this,fs_switcher,targetFragmentClass.getName(),extras);
+SwitchHelper.switchFragment(this,fs_switcher,targetFragmentClass,extras);
+SwitchHelper.switchFragment(this,fs_switcher,intent,false);
 
 如果你想从AActivity的Fragment跳转到BActivity的Fragment，你只需要将要跳转的Fragment类上添加注解@Host(所属的Activity)即可。  
 
 并且支持goback操作，如果你想反回上一个页面，你只需要调用：  
-fs_switcher.goback();  
+fs_switcher.goback();
+或者
+SwitchHelper.goback(fs_switcher,extras);
 
 其他操作可自行参照BasesActivity。  
 
@@ -49,6 +56,6 @@ fs_switcher.goback();
 1,如果你的容器Activity是SingleTask等启动模式时，需要在onNewIntent方法进行处理;  
 2,目前一个Activity只支持设定一个容器;  
 3,如果需要从非容器Activity中跳转到容器中指定fragment，可以调用:  
-SwitchHelper.checkHostOpen(this,targetFragmentClass,extras);  
+SwitchHelper.switchFragment(this,fs_switcher,intent,false);
 或者  
-SwitchHelper.checkHostOpen(this,targetFragmentName,extras);  
+SwitchHelper.switchFragment(this,fs_switcher,targetFragmentClass.getName(),extras);

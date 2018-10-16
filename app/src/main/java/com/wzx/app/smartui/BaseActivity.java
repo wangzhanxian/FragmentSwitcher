@@ -23,14 +23,19 @@ public abstract class BaseActivity extends FragmentActivity {
 
         setContentView(Utils.getLayoutId(this));
         fs_switcher = findViewById(R.id.fs_switcher);
-        if (fs_switcher != null) {
-            fs_switcher.setDefalutFragmentName(getDefaultFragmentName()).prepare();
+        if (fs_switcher != null){
+            //进行默认的Fragment类名配置
+            fs_switcher.setDefalutFragmentName(getDefaultFragmentName());
+            //true:可以切换，false：禁用切换
+//            fs_switcher.setSwitchEnable(false);
         }
+        SwitchHelper.switchFragment(this,fs_switcher,getIntent(),true);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        SwitchHelper.switchFragment(this,fs_switcher,intent,false);
         if (fs_switcher != null) {
             fs_switcher.switchFragment(intent, false);
         }
@@ -46,11 +51,7 @@ public abstract class BaseActivity extends FragmentActivity {
     }
 
     public void switchFragment(@NonNull Class<? extends BaseFragment> targetFragmentClass, Bundle extras) {
-        if (SwitchHelper.checkHostAndOpen(this,targetFragmentClass,extras)){
-            if (fs_switcher != null) {
-                fs_switcher.switchFragment(targetFragmentClass.getName(), extras);
-            }
-        }
+        SwitchHelper.switchFragment(this,fs_switcher,targetFragmentClass.getName(),extras);
     }
 
     public void switchToLastFragment() {

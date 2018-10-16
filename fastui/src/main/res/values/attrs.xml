@@ -4,5 +4,7 @@
 	<declare-styleable name="FragmentSwitcher">
 		<!--默认fragment类名-->
 		<attr name="defaultFragmentName" format="string" />
+		<!--是否可以切换-->
+		<attr name="switch_enable" format="boolean" />
 	</declare-styleable>
 </resources>
