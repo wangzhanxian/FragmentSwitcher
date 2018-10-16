@@ -36,9 +36,6 @@ public abstract class BaseActivity extends FragmentActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         SwitchHelper.switchFragment(this,fs_switcher,intent,false);
-        if (fs_switcher != null) {
-            fs_switcher.switchFragment(intent, false);
-        }
     }
 
     /**
@@ -51,7 +48,7 @@ public abstract class BaseActivity extends FragmentActivity {
     }
 
     public void switchFragment(@NonNull Class<? extends BaseFragment> targetFragmentClass, Bundle extras) {
-        SwitchHelper.switchFragment(this,fs_switcher,targetFragmentClass.getName(),extras);
+        SwitchHelper.switchFragment(this,fs_switcher,targetFragmentClass,extras);
     }
 
     public void switchToLastFragment() {
