@@ -23,7 +23,6 @@ public class UIContainer {
     private @IdRes
     int containerId;
 
-    private Fragment curFragment;
 
     public UIContainer(FragmentActivity activity) {
         this.activity = activity;
@@ -62,13 +61,9 @@ public class UIContainer {
     }
 
     Fragment getCurFragment() {
-        return curFragment;
+        return getStackSize() > 0 ? stack.getLast() : null;
     }
 
-    UIContainer setCurFragment(Fragment fragment) {
-        curFragment = fragment;
-        return this;
-    }
 
     Fragment getSwitchLastFragment() {
         return getStackSize() > 1 ? stack.get(getStackSize() - 2) : null;
@@ -113,7 +108,7 @@ public class UIContainer {
         return this;
     }
 
-    UIContainer removeStack(Fragment fragment){
+    UIContainer removeStack(Fragment fragment) {
         stack.remove(fragment);
         return this;
     }

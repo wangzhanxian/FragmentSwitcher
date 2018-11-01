@@ -11,7 +11,7 @@ import com.wzx.app.smartui.AActivity;
 import com.wzx.app.smartui.LayoutId;
 import com.wzx.app.smartui.R;
 
-@Host(AActivity.class)
+
 @Mode(LaunchMode.STANDRAD)
 @LayoutId(R.layout.fragment_a1)
 public class A1Fragment extends BaseFragment {
