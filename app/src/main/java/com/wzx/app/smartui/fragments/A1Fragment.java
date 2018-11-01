@@ -16,8 +16,6 @@ import com.wzx.app.smartui.R;
 @LayoutId(R.layout.fragment_a1)
 public class A1Fragment extends BaseFragment {
 
-    public static int times = 0;
-
     @Override
     protected void bindViews() {
         super.bindViews();
@@ -32,8 +30,8 @@ public class A1Fragment extends BaseFragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putString("tag", "A1 fff");
-                mActivity.switchFragment(times == 0 ? A2Fragment.class : B1Fragment.class, bundle);
-                times++;
+                mActivity.switchFragment(A2Fragment.class, bundle);
+                mActivity.finish(A1Fragment.this);
             }
         });
     }

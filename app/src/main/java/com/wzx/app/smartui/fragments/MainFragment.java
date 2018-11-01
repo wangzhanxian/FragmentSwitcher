@@ -26,7 +26,6 @@ public class MainFragment extends BaseFragment {
                     Bundle bundle = new Bundle();
                     bundle.putString("tag","main aaa");
                     mActivity.switchFragment(A1Fragment.class,bundle);
-                    mActivity.finish(MainFragment.this);
                 }
             });
         }

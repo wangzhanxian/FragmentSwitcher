@@ -15,6 +15,7 @@ import com.wzx.app.fastui.utils.ComnUtil;
 public class SwitchHelper {
 
     private static Handler handler = new Handler(Looper.getMainLooper());
+
     /**
      * 通过intent切换
      *
@@ -135,9 +136,10 @@ public class SwitchHelper {
 
 
     public static void goBack(FragmentSwitcher containerView, Bundle bundle) {
-        goBack(containerView,bundle,true);
+        goBack(containerView, bundle, true);
     }
-    public static void goBack(FragmentSwitcher containerView, Bundle bundle,boolean useAnim) {
+
+    public static void goBack(FragmentSwitcher containerView, Bundle bundle, boolean useAnim) {
         if (containerView == null || !containerView.checkCanSwitch()) {
             return;
         }
@@ -153,30 +155,31 @@ public class SwitchHelper {
 
     }
 
-    /**由于动画需要执行时间所以需要延时处理
+    /**
+     * 由于动画需要执行时间所以需要延时处理,没有动画
+     *
      * @param containerView
      * @param fragment
      */
-    public static void finish(FragmentSwitcher containerView, final Fragment fragment) {
+    public static void finish(final FragmentSwitcher containerView, final Fragment fragment) {
         if (fragment == null || containerView == null || !containerView.checkCanSwitch()) {
             return;
         }
         //删除对象和栈记录
         final UIContainer container = containerView.getContainer();
-        //是否删除当前显示的Fragment
-        boolean removeCurShow = fragment == container.getCurFragment();
-        if (removeCurShow) {
-            goBack(containerView,null,true);
-        }else {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //是否删除当前显示的Fragment
+                boolean removeCurShow = fragment == container.getCurFragment();
+                if (removeCurShow) {
+                    goBack(containerView, null,false);
+                } else {
                     container.removeStack(fragment);
                     FragmentTransaction transaction = container.getFragmentManager().beginTransaction();
                     transaction.remove(fragment).commit();
                 }
-            },200);
-
-        }
+            }
+        }, 200);
     }
 }
