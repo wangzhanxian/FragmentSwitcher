@@ -130,4 +130,11 @@ public class FragmentSwitcher extends FrameLayout {
     public void switchFragment(Intent intent, boolean useDefaultFragment) {
         SwitchHelper.switchFragment(container.getActivity(),this, intent, useDefaultFragment);
     }
+
+    /**关闭容器中某个Fragment，如果容器中删除后栈为空，将自动删除该Activity
+     * @param fragment
+     */
+    public void finish(Fragment fragment){
+        SwitchHelper.finish(this,fragment);
+    }
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -54,6 +55,12 @@ public abstract class BaseActivity extends FragmentActivity {
     public void switchToLastFragment() {
         if (fs_switcher != null) {
             fs_switcher.goback();
+        }
+    }
+
+    public void finish(Fragment fragment){
+        if (fs_switcher != null){
+            fs_switcher.finish(fragment);
         }
     }
 

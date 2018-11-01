@@ -147,4 +147,19 @@ public class SwitchHelper {
         }
 
     }
+
+    public static void finish(FragmentSwitcher containerView,Fragment fragment){
+        if (containerView== null || !containerView.checkCanSwitch()) {
+            return;
+        }
+        //删除对象和栈记录
+        UIContainer container = containerView.getContainer();
+        container.removeStack(fragment);
+        if (container.getStackSize()== 0){
+            container.getActivity().finish();
+            return;
+        }
+        FragmentTransaction transaction = container.getFragmentManager().beginTransaction();
+        transaction.remove(fragment).commit();
+    }
 }

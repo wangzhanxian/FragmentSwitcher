@@ -112,4 +112,10 @@ public class UIContainer {
         }
         return this;
     }
+
+    UIContainer removeStack(Fragment fragment){
+        stack.remove(fragment);
+        return this;
+    }
+
 }
