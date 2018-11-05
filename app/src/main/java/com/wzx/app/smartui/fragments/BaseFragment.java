@@ -12,10 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.wzx.app.fastui.SwitchFragment;
 import com.wzx.app.smartui.BaseActivity;
 import com.wzx.app.smartui.Utils;
 
-public class BaseFragment extends Fragment {
+public class BaseFragment extends SwitchFragment {
 
     protected BaseActivity mActivity;
 
@@ -46,16 +47,14 @@ public class BaseFragment extends Fragment {
     }
 
 
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mActivity != null) {
-                mActivity.switchToLastFragment();
-                return true;
-            }
+    @Override
+    public boolean onBackPressed() {
+        if (mActivity != null) {
+            mActivity.switchToLastFragment();
+            return true;
         }
-        return false;
+        return super.onBackPressed();
     }
-
 
     @Override
     public void onDetach() {

@@ -27,16 +27,13 @@ public abstract class BaseActivity extends FragmentActivity {
         if (fs_switcher != null){
             //进行默认的Fragment类名配置
             fs_switcher.setDefalutFragmentName(getDefaultFragmentName());
-            //true:可以切换，false：禁用切换
-//            fs_switcher.setSwitchEnable(false);
         }
-        SwitchHelper.switchFragment(this,fs_switcher,getIntent(),true);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        SwitchHelper.switchFragment(this,fs_switcher,intent,false);
+        SwitchHelper.with(this).target(intent).commit();
     }
 
     /**
@@ -49,18 +46,12 @@ public abstract class BaseActivity extends FragmentActivity {
     }
 
     public void switchFragment(@NonNull Class<? extends BaseFragment> targetFragmentClass, Bundle extras) {
-        SwitchHelper.switchFragment(this,fs_switcher,targetFragmentClass,extras);
+        SwitchHelper.with(this).target(targetFragmentClass,extras).commit();
     }
 
     public void switchToLastFragment() {
-        if (fs_switcher != null) {
-            fs_switcher.goback();
-        }
-    }
-
-    public void finish(Fragment fragment){
         if (fs_switcher != null){
-            fs_switcher.finish(fragment);
+            fs_switcher.goback();
         }
     }
 
@@ -68,8 +59,8 @@ public abstract class BaseActivity extends FragmentActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (fs_switcher != null) {
             BaseFragment fragment = (BaseFragment) fs_switcher.getCurFragment();
-            if (fragment != null) {
-                return fragment.onKeyDown(keyCode, event);
+            if (fragment != null && fragment.onKeyDown(keyCode, event)) {
+                return true;
             }
         }
         return super.onKeyDown(keyCode, event);

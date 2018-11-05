@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Pair;
 
 import com.wzx.app.fastui.LaunchMode;
+import com.wzx.app.fastui.SwitchFragment;
 import com.wzx.app.fastui.annotions.Host;
 import com.wzx.app.fastui.annotions.Mode;
 
@@ -15,7 +16,7 @@ public class ComnUtil {
     public static final String FRAGMENT_CLASS_NAME = "fragment_class_name";
     public static final String FRAGMENT_EXTRA_BUNDLE = "fragment_extra_bundle";
 
-    public static Class<? extends FragmentActivity> getContainerActivity(@NonNull Object object) {
+    public static Class<? extends FragmentActivity> getHostActivity(@NonNull Object object) {
         Class clazz = object instanceof Class ? (Class) object : object.getClass();
         Host annotation = (Host) clazz.getAnnotation(Host.class);
         return annotation != null ? annotation.value() : null;
@@ -27,26 +28,38 @@ public class ComnUtil {
         return annotation != null ? annotation.value() : LaunchMode.SINGLETASK;
     }
 
-    public static Class loadClass(ClassLoader loader, String className) {
+    public static Class<? extends SwitchFragment> loadClass(ClassLoader loader, String className) {
         try {
             if (className == null){
                 return null;
             }
-            return loader.loadClass(className);
+            return (Class<? extends SwitchFragment>) loader.loadClass(className);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static Intent setTargetToIntent(Intent intent, String fragmentName, Bundle fragmentArgs) {
-        if (fragmentName != null) {
-            intent.putExtra(FRAGMENT_CLASS_NAME, fragmentName);
+    public static SwitchFragment newInstance(Class<? extends SwitchFragment> sfClass){
+        if (sfClass != null){
+            try {
+                return sfClass.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        if (fragmentArgs != null) {
-            intent.putExtra(FRAGMENT_EXTRA_BUNDLE, fragmentArgs);
-        }
+        return null;
+    }
+
+    public static Intent setTargetToIntent(Intent intent, @NonNull String fragmentName, @NonNull Bundle fragmentArgs) {
+        intent.putExtra(FRAGMENT_CLASS_NAME, fragmentName);
+        intent.putExtra(FRAGMENT_EXTRA_BUNDLE, fragmentArgs);
         return intent;
+    }
+
+    public static boolean hasTarget(Intent intent){
+        Bundle extras = intent.getExtras();
+        return extras != null && extras.containsKey(FRAGMENT_CLASS_NAME);
     }
 
     public static Pair<String, Bundle> getTargetFromIntent(Intent intent) {
@@ -58,4 +71,5 @@ public class ComnUtil {
         }
         return new Pair<>(null,null);
     }
+
 }

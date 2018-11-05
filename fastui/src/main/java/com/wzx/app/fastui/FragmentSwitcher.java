@@ -11,16 +11,15 @@ import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
+import com.wzx.app.fastui.utils.ComnUtil;
+
 
 public class FragmentSwitcher extends FrameLayout {
 
 
     private UIContainer container;
 
-    /**
-     * 是否可以切换
-     */
-    private boolean canSwitch;
+    private boolean isAttached;
 
     public FragmentSwitcher(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -40,8 +39,6 @@ public class FragmentSwitcher extends FrameLayout {
             typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.FragmentSwitcher);
             //获取默认fragment类名
             defalutFragmentName = typedArray.getString(R.styleable.FragmentSwitcher_defaultFragmentName);
-            //是否可以切换，默认可以切换
-            canSwitch = typedArray.getBoolean(R.styleable.FragmentSwitcher_switch_enable,true);
         } finally {
             if (typedArray != null) {
                 typedArray.recycle();
@@ -54,26 +51,46 @@ public class FragmentSwitcher extends FrameLayout {
             setId(generateViewId());
         }
         container = new UIContainer((FragmentActivity) getContext()).setContainerId(getId()).setDefaultFragmentName(defalutFragmentName);
+        SwitchContainerManager.add(container);
     }
 
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        isAttached = true;
+        tryShowDefaultFragment();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        isAttached = false;
+        SwitchContainerManager.remove(container);
+    }
+
+
     public FragmentSwitcher setDefalutFragmentName(String defalutFragmentName) {
+        if (container.getDefaultFragmentName() != null){
+            throw new RuntimeException("the container has set defalutFragmentName");
+        }
         if (defalutFragmentName != null) {
             container.setDefaultFragmentName(defalutFragmentName);
+            tryShowDefaultFragment();
         }
         return this;
     }
 
-    public FragmentSwitcher setSwitchEnable(boolean switchEnable){
-        canSwitch = switchEnable;
-        return this;
-    }
 
-    public UIContainer getContainer() {
-        return container;
-    }
-
-    public boolean checkCanSwitch() {
-        return canSwitch;
+    private void tryShowDefaultFragment(){
+        if (isAttached && container.getStackSize() == 0){
+            Intent intent = container.getActivity().getIntent();
+            if (ComnUtil.hasTarget(intent)){
+                SwitchHelper.with(container.getActivity()).target(intent).commit();
+            }else if (container.getDefaultFragmentName() != null){
+                SwitchHelper.with(container.getActivity()).target(container.getDefaultFragmentName(),null).commit();
+            }
+        }
     }
 
     public Fragment getCurFragment() {
@@ -85,56 +102,15 @@ public class FragmentSwitcher extends FrameLayout {
         return container.getStackSize() > 1;
     }
 
-    /**
-     * 反回上一个fragment
-     */
-    public void goback() {
-        goback(null);
+    public boolean goback(){
+      return goback(null);
     }
 
-    /**
-     * 反回上一个fragment并且携带参数
-     *
-     * @param bundle
-     */
-    public void goback(Bundle bundle) {
-        SwitchHelper.goBack(this, bundle);
+    public boolean goback(Bundle bundle){
+        return SwitchHelper.goBack(container.getActivity(),bundle);
     }
 
-    /**
-     * 根据fragment名字切换
-     *
-     * @param fragmentName
-     * @param extras
-     */
-    public void switchFragment(String fragmentName, Bundle extras) {
-        SwitchHelper.switchFragment(container.getActivity(),this, fragmentName, extras);
-    }
-
-    /**
-     * 根据类名切换
-     *
-     * @param fragmentClass
-     * @param extras
-     */
-    public void switchFragment(Class<? extends Fragment> fragmentClass, Bundle extras) {
-        SwitchHelper.switchFragment(container.getActivity(),this, fragmentClass, extras);
-    }
-
-    /**
-     * 根据intent进行切换
-     *
-     * @param intent
-     * @param useDefaultFragment
-     */
-    public void switchFragment(Intent intent, boolean useDefaultFragment) {
-        SwitchHelper.switchFragment(container.getActivity(),this, intent, useDefaultFragment);
-    }
-
-    /**关闭容器中某个Fragment，如果容器中删除后栈为空，将自动删除该Activity
-     * @param fragment
-     */
-    public void finish(Fragment fragment){
-        SwitchHelper.finish(this,fragment);
+    public boolean goback(Bundle bundle,boolean useAnim){
+        return SwitchHelper.goBack(container.getActivity(),bundle,useAnim);
     }
 }

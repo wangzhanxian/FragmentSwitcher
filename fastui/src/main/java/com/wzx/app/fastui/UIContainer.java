@@ -16,7 +16,7 @@ public class UIContainer {
 
     private FragmentActivity activity;
 
-    private LinkedList<Fragment> stack;
+    private LinkedList<SwitchFragment> stack;
 
     private String defaultFragmentName;
 
@@ -56,16 +56,16 @@ public class UIContainer {
     }
 
 
-    Fragment getFirstFragment() {
+    SwitchFragment getFirstFragment() {
         return getStackSize() != 0 ? stack.getFirst() : null;
     }
 
-    Fragment getCurFragment() {
+    SwitchFragment getCurFragment() {
         return getStackSize() > 0 ? stack.getLast() : null;
     }
 
 
-    Fragment getSwitchLastFragment() {
+    SwitchFragment getSwitchLastFragment() {
         return getStackSize() > 1 ? stack.get(getStackSize() - 2) : null;
     }
 
@@ -74,9 +74,9 @@ public class UIContainer {
         return stack.size();
     }
 
-    Fragment isSwitchLast(Fragment fragment) {
+    SwitchFragment isSwitchLast(SwitchFragment fragment) {
         boolean reuseTask = ComnUtil.getLaunchMode(fragment) == LaunchMode.SINGLETASK;
-        for (Fragment stackFragment : stack) {
+        for (SwitchFragment stackFragment : stack) {
             if (stackFragment == fragment || (reuseTask && TextUtils.equals(stackFragment.getClass().getName(), fragment.getClass().getName()))) {
                 return stackFragment;
             }
@@ -84,7 +84,7 @@ public class UIContainer {
         return null;
     }
 
-    UIContainer addToStack(Fragment targetFragment, FragmentTransaction transaction) {
+    UIContainer addToStack(SwitchFragment targetFragment, FragmentTransaction transaction) {
         stack.add(targetFragment);
         if (!targetFragment.isAdded()) {
             transaction.add(getContainerId(), targetFragment);
@@ -94,7 +94,7 @@ public class UIContainer {
         return this;
     }
 
-    UIContainer popStack(Fragment targetFragment, FragmentTransaction transaction) {
+    UIContainer popStack(SwitchFragment targetFragment, FragmentTransaction transaction) {
         while (getStackSize() > 0) {
             Fragment last = stack.getLast();
             if (last != targetFragment) {
@@ -108,7 +108,7 @@ public class UIContainer {
         return this;
     }
 
-    UIContainer removeStack(Fragment fragment) {
+    UIContainer removeStack(SwitchFragment fragment) {
         stack.remove(fragment);
         return this;
     }

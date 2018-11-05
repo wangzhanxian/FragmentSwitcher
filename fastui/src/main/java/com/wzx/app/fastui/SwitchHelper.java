@@ -1,185 +1,130 @@
 package com.wzx.app.fastui;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.v4.app.Fragment;
+import android.support.annotation.AnimRes;
+import android.support.annotation.AnimatorRes;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
-import android.util.Pair;
+import android.util.Log;
 
 import com.wzx.app.fastui.utils.ComnUtil;
 
 public class SwitchHelper {
 
-    private static Handler handler = new Handler(Looper.getMainLooper());
+    private static final String TAG = SwitchHelper.class.getSimpleName();
+
+    private static int[] globalAnims = new int[]{0,0,0,0};
 
     /**
-     * 通过intent切换
+     * 设置全局公共动画，其中参数的意义是
+     1）enter 指定向栈中放入新的Fragment时的动画
+
+     2）exit 指定向栈中弹出当前栈顶的Fragment时的动画
+
+     3）popEnter 指定由于当前栈顶Fragment弹出而显示底层的Fragment时的动画
+
+     4）popExit 指定当前栈顶的Fragment被弹出时的动画
      *
-     * @param activity
-     * @param containerView
-     * @param intent
-     * @param useDefaultFragment
+     * @param enter
+     * @param exit
+     * @param popEnter
+     * @param popExit
      */
-    public static void switchFragment(FragmentActivity activity, FragmentSwitcher containerView, Intent intent, boolean useDefaultFragment) {
-        Pair<String, Bundle> bundlePair = ComnUtil.getTargetFromIntent(intent);
-        String targetFragmentName = bundlePair.first;
-        if (bundlePair.first == null && useDefaultFragment && containerView != null) {
-            targetFragmentName = containerView.getContainer().getDefaultFragmentName();
-        }
-        Class fragmentClass = ComnUtil.loadClass(activity.getClassLoader(), targetFragmentName);
-        if (fragmentClass != null && checkHostAndOpen(activity, fragmentClass, bundlePair.second) && containerView != null && containerView.checkCanSwitch()) {
-            doSwitch(containerView, fragmentClass, bundlePair.second, useDefaultFragment);
-        }
+    public static void setGlobalCustomAnimations(@AnimatorRes @AnimRes int enter,
+                                                 @AnimatorRes @AnimRes int exit, @AnimatorRes @AnimRes int popEnter,
+                                                 @AnimatorRes @AnimRes int popExit) {
+        globalAnims = new int[]{enter, exit, popEnter, popExit};
     }
 
-    /**
-     * 直接通过类名切换
-     *
+
+    /**调用入口
      * @param activity
-     * @param containerView
-     * @param fragmentName
-     * @param extras
+     * @return
      */
-    public static void switchFragment(FragmentActivity activity, FragmentSwitcher containerView, String fragmentName, Bundle extras) {
-        switchFragment(activity, containerView, ComnUtil.loadClass(activity.getClassLoader(), fragmentName), extras);
+    public static SwitchCard with(FragmentActivity activity) {
+        return new SwitchCard(activity);
     }
 
-    public static void switchFragment(FragmentActivity activity, FragmentSwitcher containerView, Class<? extends Fragment> fragmentClass, Bundle extras) {
-        if (fragmentClass != null && checkHostAndOpen(activity, fragmentClass, extras) && containerView != null && containerView.checkCanSwitch()) {
-            doSwitch(containerView, fragmentClass, extras, true);
+    static boolean commit(SwitchCard card) {
+        if (card.getTargetFragment() == null) {
+            Log.e(TAG, "no match target fragment");
+            return false;
         }
-    }
-
-
-    private static void doSwitch(FragmentSwitcher containerView, Class<? extends Fragment> fragmentClass, Bundle extras, boolean useAnim) {
-        if (fragmentClass != null) {
-            doSwitch(containerView.getContainer(), ensureFragment(fragmentClass), extras, useAnim);
-        }
-    }
-
-    private static void doSwitch(UIContainer container, Fragment targetFragment, Bundle extras, boolean useAnim) {
-        if (targetFragment != null) {
-            Fragment stackFragment = container.isSwitchLast(targetFragment);
+        String hostName = card.getHostName();
+        if (hostName.equals(card.getCurActivity().getClass().getName())) {
+            UIContainer container = SwitchContainerManager.getUIContainer(card.getCurActivity());
+            if (container == null) {
+                Log.e(TAG, "the activity " + card.getCurActivity().getClass().getName() + " missing the container");
+                return false;
+            }
+            SwitchFragment stackFragment = container.isSwitchLast(card.getTargetFragment());
             boolean switchLast = stackFragment != null;
             if (switchLast) {
                 //如果目标fragment就在栈顶
                 if (container.getCurFragment() == stackFragment) {
-                    return;
+                    container.getCurFragment().onNewBundle(card.getTargetBundle());
+                    return true;
                 }
-                targetFragment = stackFragment;
+                card.setTargetFragment(stackFragment);
             }
             // 添加参数
-            if (extras != null) {
-                targetFragment.setArguments(extras);
+            if (card.getTargetBundle() != null) {
+                if (switchLast) {
+                    card.getTargetFragment().onNewBundle(card.getTargetBundle());
+                } else {
+                    card.getTargetFragment().setArguments(card.getTargetBundle());
+                }
             }
             FragmentTransaction transaction = container.getFragmentManager().beginTransaction();
-            if (container.getStackSize() != 0 && useAnim) {
-                if (!switchLast) {
-                    transaction.setCustomAnimations(R.anim.anim_enter_right_to_left, R.anim.anim_exit_right_to_left);
-                } else {
-                    transaction.setCustomAnimations(R.anim.anim_enter_left_to_right, R.anim.anim_exit_left_to_right);
+            if (container.getStackSize() != 0 && card.isUseAnim()) {
+                int enter = card.getEnterAnim() == 0 ? globalAnims[switchLast ? 2 : 0] : card.getEnterAnim();
+                int exit = card.getExitAnim() == 0 ? globalAnims[switchLast ? 3 : 1] : card.getExitAnim();
+                if (enter != 0 && exit != 0) {
+                    transaction.setCustomAnimations(enter, exit);
                 }
             }
-            hideAllFragment(transaction, container, switchLast);
             if (!switchLast) {
-                container.addToStack(targetFragment, transaction);
+                if (container.getCurFragment() != null) {
+                    if (card.isFinishCurrent()) {
+                        transaction.remove(container.getCurFragment());
+                    } else {
+                        transaction.hide(container.getCurFragment());
+                    }
+                }
+                container.addToStack(card.getTargetFragment(), transaction);
             } else {
-                container.popStack(targetFragment, transaction);
+                container.popStack(card.getTargetFragment(), transaction);
             }
             transaction.commit();
-        }
-    }
-
-    private static void hideAllFragment(FragmentTransaction transaction, UIContainer container, boolean switchLast) {
-        for (Fragment fragment : container.getFragmentManager().getFragments()) {
-            if (!fragment.isHidden()) {
-                if (switchLast && fragment == container.getCurFragment()) {
-                    continue;
-                }
-                transaction.hide(fragment);
+        } else {
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName(card.getCurActivity().getPackageName(), hostName));
+            ComnUtil.setTargetToIntent(intent, card.getTargetFragment().getClass().getName(), card.getTargetBundle());
+            card.getCurActivity().startActivity(intent);
+            if (card.isFinishCurrent()){
+                SwitchHelper.goBack(card.getCurActivity(),card.getTargetBundle(),false);
             }
         }
+        return true;
     }
 
-    private static Fragment ensureFragment(Class<? extends Fragment> fragmentClass) {
-        try {
-            return fragmentClass.newInstance();
-        } catch (Exception e) {
-            return null;
-        }
+    public static boolean goBack(FragmentActivity activity, Bundle bundle) {
+       return goBack(activity, bundle, true);
     }
 
-
-    public static boolean checkHostAndOpen(FragmentActivity activity, String targetFragmentName, Bundle extras) {
-        return checkHostAndOpen(activity, ComnUtil.loadClass(activity.getClassLoader(), targetFragmentName), extras);
-    }
-
-    private static boolean checkHostAndOpen(FragmentActivity activity, Class fragmentClass, Bundle extras) {
-        if (fragmentClass == null) {
-            return false;
-        }
-        Class<? extends FragmentActivity> hostActClass = ComnUtil.getContainerActivity(fragmentClass);
-        if (hostActClass == null) {
-            hostActClass = activity.getClass();
-        }
-        boolean isCurHost = TextUtils.equals(hostActClass.getName(), activity.getClass().getName());
-        if (!isCurHost) {
-            Intent intent = new Intent(activity, hostActClass);
-            activity.startActivity(ComnUtil.setTargetToIntent(intent, fragmentClass.getName(), extras));
-        }
-        return isCurHost;
-    }
-
-
-    public static void goBack(FragmentSwitcher containerView, Bundle bundle) {
-        goBack(containerView, bundle, true);
-    }
-
-    public static void goBack(FragmentSwitcher containerView, Bundle bundle, boolean useAnim) {
-        if (containerView == null || !containerView.checkCanSwitch()) {
-            return;
-        }
-        UIContainer uiContainer = containerView.getContainer();
-        if (uiContainer != null) {
-            Fragment switchLastFragment = uiContainer.getSwitchLastFragment();
+    public static boolean goBack(FragmentActivity activity, Bundle bundle, boolean useAnim) {
+        UIContainer container = SwitchContainerManager.getUIContainer(activity);
+        if (container != null) {
+            SwitchFragment switchLastFragment = container.getSwitchLastFragment();
             if (switchLastFragment != null) {
-                doSwitch(uiContainer, switchLastFragment, bundle, useAnim);
-            } else {
-                uiContainer.getActivity().finish();
+                with(activity).target(switchLastFragment,bundle).animEnable(useAnim).commit();
+                return true;
+            }else {
+                container.getActivity().finish();
             }
         }
-
-    }
-
-    /**
-     * 由于动画需要执行时间所以需要延时处理,没有动画
-     *
-     * @param containerView
-     * @param fragment
-     */
-    public static void finish(final FragmentSwitcher containerView, final Fragment fragment) {
-        if (fragment == null || containerView == null || !containerView.checkCanSwitch()) {
-            return;
-        }
-        //删除对象和栈记录
-        final UIContainer container = containerView.getContainer();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //是否删除当前显示的Fragment
-                boolean removeCurShow = fragment == container.getCurFragment();
-                if (removeCurShow) {
-                    goBack(containerView, null,false);
-                } else {
-                    container.removeStack(fragment);
-                    FragmentTransaction transaction = container.getFragmentManager().beginTransaction();
-                    transaction.remove(fragment).commit();
-                }
-            }
-        }, 200);
+        return false;
     }
 }

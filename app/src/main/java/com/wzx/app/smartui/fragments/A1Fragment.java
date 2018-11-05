@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.wzx.app.fastui.LaunchMode;
+import com.wzx.app.fastui.SwitchHelper;
 import com.wzx.app.fastui.annotions.Host;
 import com.wzx.app.fastui.annotions.Mode;
 import com.wzx.app.smartui.AActivity;
@@ -30,8 +31,7 @@ public class A1Fragment extends BaseFragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putString("tag", "A1 fff");
-                mActivity.switchFragment(A2Fragment.class, bundle);
-                mActivity.finish(A1Fragment.this);
+                SwitchHelper.with(mActivity).target(A2Fragment.class,bundle).finishCurrent().commit();
             }
         });
     }
