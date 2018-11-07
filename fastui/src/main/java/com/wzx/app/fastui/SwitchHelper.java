@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.AnimRes;
 import android.support.annotation.AnimatorRes;
+import android.support.annotation.MainThread;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.wzx.app.fastui.utils.ComnUtil;
 
+@MainThread
 public class SwitchHelper {
 
     private static final String TAG = SwitchHelper.class.getSimpleName();
@@ -47,7 +49,7 @@ public class SwitchHelper {
         return new SwitchCard(activity);
     }
 
-    static boolean commit(SwitchCard card) {
+    static boolean commit(final SwitchCard card) {
         if (card.getTargetFragment() == null) {
             Log.e(TAG, "no match target fragment");
             return false;
@@ -97,15 +99,16 @@ public class SwitchHelper {
             } else {
                 container.popStack(card.getTargetFragment(), transaction);
             }
-            transaction.commit();
+            transaction.commitAllowingStateLoss();
         } else {
+            if (card.isFinishCurrent()) {
+                SwitchHelper.goBack(card.getCurActivity(), card.getTargetBundle(), false);
+            }
             Intent intent = new Intent();
             intent.setComponent(new ComponentName(card.getCurActivity().getPackageName(), hostName));
             ComnUtil.setTargetToIntent(intent, card.getTargetFragment().getClass().getName(), card.getTargetBundle());
             card.getCurActivity().startActivity(intent);
-            if (card.isFinishCurrent()){
-                SwitchHelper.goBack(card.getCurActivity(),card.getTargetBundle(),false);
-            }
+
         }
         return true;
     }
