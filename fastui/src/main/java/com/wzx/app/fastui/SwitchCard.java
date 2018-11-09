@@ -65,17 +65,18 @@ public class SwitchCard {
         return this;
     }
 
-    public SwitchCard goback(){
+    public SwitchCard goback() {
         return goback(null);
     }
 
-    public SwitchCard goback(Bundle bundle){
-        targetFragment = curSwitcher.getContainer().getSwitchLastFragment();
+    public SwitchCard goback(Bundle bundle) {
+        UIContainer container = curSwitcher != null ? curSwitcher.getContainer() : SwitchContainerManager.getUIContainer(curActivity);
+        targetFragment = container != null ? container.getSwitchLastFragment() : null;
         targetBundle = bundle;
         return this;
     }
 
-    boolean isUseAnim(){
+    boolean isUseAnim() {
         return useAnim;
     }
 
@@ -84,7 +85,7 @@ public class SwitchCard {
         return hostName == null ? curActivity.getClass().getName() : hostName;
     }
 
-    FragmentSwitcher getCurSwitcher(){
+    FragmentSwitcher getCurSwitcher() {
         return curSwitcher;
     }
 
@@ -96,7 +97,7 @@ public class SwitchCard {
         return targetFragment;
     }
 
-    void setTargetFragment(SwitchFragment fragment){
+    void setTargetFragment(SwitchFragment fragment) {
         targetFragment = fragment;
     }
 
@@ -104,7 +105,7 @@ public class SwitchCard {
         return enterAnim;
     }
 
-    int getExitAnim(){
+    int getExitAnim() {
         return exitAnim;
     }
 
@@ -123,7 +124,7 @@ public class SwitchCard {
         return this;
     }
 
-    boolean isFinishCurrent(){
+    boolean isFinishCurrent() {
         return destoryCurFragment;
     }
 
@@ -151,6 +152,6 @@ public class SwitchCard {
 
 
     public boolean commit() {
-       return SwitchHelper.commit(this);
+        return SwitchHelper.commit(this);
     }
 }
