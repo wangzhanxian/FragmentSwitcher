@@ -51,7 +51,9 @@ public abstract class BaseActivity extends FragmentActivity {
 
     public void switchToLastFragment() {
         if (fs_switcher != null){
-            fs_switcher.goback();
+            if (!fs_switcher.goback()) {
+                finish();
+            }
         }
     }
 

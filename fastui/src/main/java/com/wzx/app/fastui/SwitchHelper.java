@@ -17,17 +17,17 @@ public class SwitchHelper {
 
     private static final String TAG = SwitchHelper.class.getSimpleName();
 
-    private static int[] globalAnims = new int[]{0,0,0,0};
+    private static int[] globalAnims = new int[]{0, 0, 0, 0};
 
     /**
      * 设置全局公共动画，其中参数的意义是
-     1）enter 指定向栈中放入新的Fragment时的动画
-
-     2）exit 指定向栈中弹出当前栈顶的Fragment时的动画
-
-     3）popEnter 指定由于当前栈顶Fragment弹出而显示底层的Fragment时的动画
-
-     4）popExit 指定当前栈顶的Fragment被弹出时的动画
+     * 1）enter 指定向栈中放入新的Fragment时的动画
+     * <p>
+     * 2）exit 指定向栈中弹出当前栈顶的Fragment时的动画
+     * <p>
+     * 3）popEnter 指定由于当前栈顶Fragment弹出而显示底层的Fragment时的动画
+     * <p>
+     * 4）popExit 指定当前栈顶的Fragment被弹出时的动画
      *
      * @param enter
      * @param exit
@@ -41,7 +41,9 @@ public class SwitchHelper {
     }
 
 
-    /**调用入口
+    /**
+     * 调用入口,通过当前activity
+     *
      * @param activity
      * @return
      */
@@ -49,14 +51,25 @@ public class SwitchHelper {
         return new SwitchCard(activity);
     }
 
+    /**
+     * 调用入口，通过当前容器
+     *
+     * @param switcher
+     * @return
+     */
+    public static SwitchCard with(FragmentSwitcher switcher) {
+        return new SwitchCard(switcher);
+    }
+
+
     static boolean commit(final SwitchCard card) {
         if (card.getTargetFragment() == null) {
             Log.e(TAG, "no match target fragment");
             return false;
         }
         String hostName = card.getHostName();
+        UIContainer container = SwitchContainerManager.getUIContainer(card.getCurActivity());
         if (hostName.equals(card.getCurActivity().getClass().getName())) {
-            UIContainer container = SwitchContainerManager.getUIContainer(card.getCurActivity());
             if (container == null) {
                 Log.e(TAG, "the activity " + card.getCurActivity().getClass().getName() + " missing the container");
                 return false;
@@ -102,7 +115,9 @@ public class SwitchHelper {
             transaction.commitAllowingStateLoss();
         } else {
             if (card.isFinishCurrent()) {
-                SwitchHelper.goBack(card.getCurActivity(), card.getTargetBundle(), false);
+                if (container != null) {
+                    SwitchHelper.with(card.getCurActivity()).target(container.getSwitchLastFragment(), card.getTargetBundle()).animEnable(false).commit();
+                }
             }
             Intent intent = new Intent();
             intent.setComponent(new ComponentName(card.getCurActivity().getPackageName(), hostName));
@@ -111,23 +126,5 @@ public class SwitchHelper {
 
         }
         return true;
-    }
-
-    public static boolean goBack(FragmentActivity activity, Bundle bundle) {
-       return goBack(activity, bundle, true);
-    }
-
-    public static boolean goBack(FragmentActivity activity, Bundle bundle, boolean useAnim) {
-        UIContainer container = SwitchContainerManager.getUIContainer(activity);
-        if (container != null) {
-            SwitchFragment switchLastFragment = container.getSwitchLastFragment();
-            if (switchLastFragment != null) {
-                with(activity).target(switchLastFragment,bundle).animEnable(useAnim).commit();
-                return true;
-            }else {
-                container.getActivity().finish();
-            }
-        }
-        return false;
     }
 }

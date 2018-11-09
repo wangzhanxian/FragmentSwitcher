@@ -69,9 +69,13 @@ public class FragmentSwitcher extends FrameLayout {
         SwitchContainerManager.remove(container);
     }
 
+    UIContainer getContainer() {
+        return container;
+    }
+
 
     public FragmentSwitcher setDefalutFragmentName(String defalutFragmentName) {
-        if (container.getDefaultFragmentName() != null){
+        if (container.getDefaultFragmentName() != null) {
             throw new RuntimeException("the container has set defalutFragmentName");
         }
         if (defalutFragmentName != null) {
@@ -82,13 +86,13 @@ public class FragmentSwitcher extends FrameLayout {
     }
 
 
-    private void tryShowDefaultFragment(){
-        if (isAttached && container.getStackSize() == 0){
+    private void tryShowDefaultFragment() {
+        if (isAttached && container.getStackSize() == 0) {
             Intent intent = container.getActivity().getIntent();
-            if (ComnUtil.hasTarget(intent)){
+            if (ComnUtil.hasTarget(intent)) {
                 SwitchHelper.with(container.getActivity()).target(intent).commit();
-            }else if (container.getDefaultFragmentName() != null){
-                SwitchHelper.with(container.getActivity()).target(container.getDefaultFragmentName(),null).commit();
+            } else if (container.getDefaultFragmentName() != null) {
+                SwitchHelper.with(container.getActivity()).target(container.getDefaultFragmentName(), null).commit();
             }
         }
     }
@@ -102,15 +106,15 @@ public class FragmentSwitcher extends FrameLayout {
         return container.getStackSize() > 1;
     }
 
-    public boolean goback(){
-      return goback(null);
+    public boolean goback() {
+        return goback(null);
     }
 
-    public boolean goback(Bundle bundle){
-        return SwitchHelper.goBack(container.getActivity(),bundle);
+    public boolean goback(Bundle bundle) {
+        return goback(bundle,true);
     }
 
-    public boolean goback(Bundle bundle,boolean useAnim){
-        return SwitchHelper.goBack(container.getActivity(),bundle,useAnim);
+    public boolean goback(Bundle bundle, boolean useAnim) {
+        return SwitchHelper.with(this).goback( bundle).animEnable(useAnim).commit();
     }
 }
