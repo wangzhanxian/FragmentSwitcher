@@ -34,7 +34,7 @@
 fs_switcher.setDefalutFragmentName(getDefaultFragmentName());
 
 切换Fragment 如下：  
-SwitchHelper.with(mActivity).target(A2Fragment.class,bundle).finishCurrent().commit();
+SwitchHelper.with(mActivity).target(A2Fragment.class,bundle).finishCurrent().commit();  
 或者返回:  
 SwitchHelper.with(FragmentSwitcher).goback( bundle).animEnable(useAnim).commit();  
 
