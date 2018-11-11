@@ -5,10 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.AnimRes;
 import android.support.annotation.AnimatorRes;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.util.Pair;
 
-import com.wzx.app.fastui.utils.ComnUtil;
+import com.wzx.app.fastui.utils.FragmentUtil;
 
 public class SwitchCard {
 
@@ -34,9 +33,9 @@ public class SwitchCard {
      */
     private boolean useAnim;
 
-    private FragmentSwitcher curSwitcher;
+    private ContainerView curSwitcher;
 
-    protected SwitchCard(FragmentSwitcher switcher) {
+    protected SwitchCard(ContainerView switcher) {
         this(switcher.getContainer().getActivity());
         this.curSwitcher = switcher;
     }
@@ -47,16 +46,16 @@ public class SwitchCard {
     }
 
     public SwitchCard target(Intent intent) {
-        Pair<String, Bundle> targetFromIntent = ComnUtil.getTargetFromIntent(intent);
+        Pair<String, Bundle> targetFromIntent = FragmentUtil.getTargetFromIntent(intent);
         return target(targetFromIntent.first, targetFromIntent.second);
     }
 
     public SwitchCard target(String fragmentName, Bundle bundle) {
-        return target(ComnUtil.loadClass(getClass().getClassLoader(), fragmentName), bundle);
+        return target(FragmentUtil.loadClass(getClass().getClassLoader(), fragmentName), bundle);
     }
 
     public SwitchCard target(Class<? extends SwitchFragment> fragmentClass, Bundle bundle) {
-        return target(ComnUtil.newInstance(fragmentClass), bundle);
+        return target(FragmentUtil.newInstance(fragmentClass), bundle);
     }
 
     public SwitchCard target(SwitchFragment fragment, Bundle bundle) {
@@ -70,7 +69,7 @@ public class SwitchCard {
     }
 
     public SwitchCard goback(Bundle bundle) {
-        UIContainer container = curSwitcher != null ? curSwitcher.getContainer() : SwitchContainerManager.getUIContainer(curActivity);
+        ContainerManager container = curSwitcher != null ? curSwitcher.getContainer() : ContainerCollector.getUIContainer(curActivity);
         targetFragment = container != null ? container.getSwitchLastFragment() : null;
         targetBundle = bundle;
         return this;
@@ -85,7 +84,7 @@ public class SwitchCard {
         return hostName == null ? curActivity.getClass().getName() : hostName;
     }
 
-    FragmentSwitcher getCurSwitcher() {
+    ContainerView getCurSwitcher() {
         return curSwitcher;
     }
 

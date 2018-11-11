@@ -1,6 +1,5 @@
 package com.wzx.app.fastui;
 
-
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -8,11 +7,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 
-import com.wzx.app.fastui.utils.ComnUtil;
+import com.wzx.app.fastui.utils.FragmentUtil;
 
 import java.util.LinkedList;
 
-public class UIContainer {
+public class ContainerManager {
 
     private FragmentActivity activity;
 
@@ -24,7 +23,7 @@ public class UIContainer {
     int containerId;
 
 
-    public UIContainer(FragmentActivity activity) {
+    public ContainerManager(FragmentActivity activity) {
         this.activity = activity;
         this.stack = new LinkedList<>();
     }
@@ -41,12 +40,12 @@ public class UIContainer {
         return containerId;
     }
 
-    UIContainer setDefaultFragmentName(String defaultFragmentName) {
+    ContainerManager setDefaultFragmentName(String defaultFragmentName) {
         this.defaultFragmentName = defaultFragmentName;
         return this;
     }
 
-    UIContainer setContainerId(int containerId) {
+    ContainerManager setContainerId(int containerId) {
         this.containerId = containerId;
         return this;
     }
@@ -75,7 +74,7 @@ public class UIContainer {
     }
 
     SwitchFragment isSwitchLast(SwitchFragment fragment) {
-        boolean reuseTask = ComnUtil.getLaunchMode(fragment) == LaunchMode.SINGLETASK;
+        boolean reuseTask = FragmentUtil.getLaunchMode(fragment) == LaunchMode.SINGLETASK;
         for (SwitchFragment stackFragment : stack) {
             if (stackFragment == fragment || (reuseTask && TextUtils.equals(stackFragment.getClass().getName(), fragment.getClass().getName()))) {
                 return stackFragment;
@@ -84,7 +83,7 @@ public class UIContainer {
         return null;
     }
 
-    UIContainer addToStack(SwitchFragment targetFragment, FragmentTransaction transaction) {
+    ContainerManager addToStack(SwitchFragment targetFragment, FragmentTransaction transaction) {
         stack.add(targetFragment);
         if (!targetFragment.isAdded()) {
             transaction.add(getContainerId(), targetFragment);
@@ -94,7 +93,7 @@ public class UIContainer {
         return this;
     }
 
-    UIContainer popStack(SwitchFragment targetFragment, FragmentTransaction transaction) {
+    ContainerManager popStack(SwitchFragment targetFragment, FragmentTransaction transaction) {
         while (getStackSize() > 0) {
             Fragment last = stack.getLast();
             if (last != targetFragment) {
@@ -108,7 +107,7 @@ public class UIContainer {
         return this;
     }
 
-    UIContainer removeStack(SwitchFragment fragment) {
+    ContainerManager removeStack(SwitchFragment fragment) {
         stack.remove(fragment);
         return this;
     }

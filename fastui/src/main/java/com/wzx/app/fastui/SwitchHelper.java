@@ -2,7 +2,6 @@ package com.wzx.app.fastui;
 
 import android.content.ComponentName;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.AnimRes;
 import android.support.annotation.AnimatorRes;
 import android.support.annotation.MainThread;
@@ -10,7 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
-import com.wzx.app.fastui.utils.ComnUtil;
+import com.wzx.app.fastui.utils.FragmentUtil;
 
 @MainThread
 public class SwitchHelper {
@@ -57,7 +56,7 @@ public class SwitchHelper {
      * @param switcher
      * @return
      */
-    public static SwitchCard with(FragmentSwitcher switcher) {
+    public static SwitchCard with(ContainerView switcher) {
         return new SwitchCard(switcher);
     }
 
@@ -68,7 +67,7 @@ public class SwitchHelper {
             return false;
         }
         String hostName = card.getHostName();
-        UIContainer container = SwitchContainerManager.getUIContainer(card.getCurActivity());
+        ContainerManager container = ContainerCollector.getUIContainer(card.getCurActivity());
         if (hostName.equals(card.getCurActivity().getClass().getName())) {
             if (container == null) {
                 Log.e(TAG, "the activity " + card.getCurActivity().getClass().getName() + " missing the container");
@@ -121,7 +120,7 @@ public class SwitchHelper {
             }
             Intent intent = new Intent();
             intent.setComponent(new ComponentName(card.getCurActivity().getPackageName(), hostName));
-            ComnUtil.setTargetToIntent(intent, card.getTargetFragment().getClass().getName(), card.getTargetBundle());
+            FragmentUtil.setTargetToIntent(intent, card.getTargetFragment().getClass().getName(), card.getTargetBundle());
             card.getCurActivity().startActivity(intent);
 
         }

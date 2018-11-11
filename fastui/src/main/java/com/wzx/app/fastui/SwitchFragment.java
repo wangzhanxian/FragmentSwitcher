@@ -1,18 +1,17 @@
 package com.wzx.app.fastui;
 
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 
-import com.wzx.app.fastui.utils.ComnUtil;
+import com.wzx.app.fastui.utils.FragmentUtil;
 
 public class SwitchFragment extends Fragment {
 
 
     protected String hostName() {
-        Class<? extends FragmentActivity> hostActivity = ComnUtil.getHostActivity(this);
+        Class<? extends FragmentActivity> hostActivity = FragmentUtil.getHostActivity(this);
         return hostActivity != null ? hostActivity.getName() : null;
     }
 

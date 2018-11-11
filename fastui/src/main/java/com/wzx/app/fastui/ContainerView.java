@@ -11,22 +11,22 @@ import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
-import com.wzx.app.fastui.utils.ComnUtil;
+import com.wzx.app.fastui.utils.FragmentUtil;
 
 
-public class FragmentSwitcher extends FrameLayout {
+public class ContainerView extends FrameLayout {
 
 
-    private UIContainer container;
+    private ContainerManager container;
 
     private boolean isAttached;
 
-    public FragmentSwitcher(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public ContainerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public FragmentSwitcher(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ContainerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }
@@ -36,9 +36,9 @@ public class FragmentSwitcher extends FrameLayout {
         String defalutFragmentName;
         TypedArray typedArray = null;
         try {
-            typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.FragmentSwitcher);
+            typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.ContainerView);
             //获取默认fragment类名
-            defalutFragmentName = typedArray.getString(R.styleable.FragmentSwitcher_defaultFragmentName);
+            defalutFragmentName = typedArray.getString(R.styleable.ContainerView_defaultFragmentName);
         } finally {
             if (typedArray != null) {
                 typedArray.recycle();
@@ -50,8 +50,8 @@ public class FragmentSwitcher extends FrameLayout {
         if (getId() == NO_ID) {
             setId(generateViewId());
         }
-        container = new UIContainer((FragmentActivity) getContext()).setContainerId(getId()).setDefaultFragmentName(defalutFragmentName);
-        SwitchContainerManager.add(container);
+        container = new ContainerManager((FragmentActivity) getContext()).setContainerId(getId()).setDefaultFragmentName(defalutFragmentName);
+        ContainerCollector.add(container);
     }
 
 
@@ -66,15 +66,15 @@ public class FragmentSwitcher extends FrameLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         isAttached = false;
-        SwitchContainerManager.remove(container);
+        ContainerCollector.remove(container);
     }
 
-    UIContainer getContainer() {
+    ContainerManager getContainer() {
         return container;
     }
 
 
-    public FragmentSwitcher setDefalutFragmentName(String defalutFragmentName) {
+    public ContainerView setDefalutFragmentName(String defalutFragmentName) {
         if (container.getDefaultFragmentName() != null) {
             throw new RuntimeException("the container has set defalutFragmentName");
         }
@@ -89,7 +89,7 @@ public class FragmentSwitcher extends FrameLayout {
     private void tryShowDefaultFragment() {
         if (isAttached && container.getStackSize() == 0) {
             Intent intent = container.getActivity().getIntent();
-            if (ComnUtil.hasTarget(intent)) {
+            if (FragmentUtil.hasTarget(intent)) {
                 SwitchHelper.with(container.getActivity()).target(intent).commit();
             } else if (container.getDefaultFragmentName() != null) {
                 SwitchHelper.with(container.getActivity()).target(container.getDefaultFragmentName(), null).commit();

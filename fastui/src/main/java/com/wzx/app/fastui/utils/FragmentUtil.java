@@ -11,7 +11,7 @@ import com.wzx.app.fastui.SwitchFragment;
 import com.wzx.app.fastui.annotions.Host;
 import com.wzx.app.fastui.annotions.Mode;
 
-public class ComnUtil {
+public class FragmentUtil {
 
     public static final String FRAGMENT_CLASS_NAME = "fragment_class_name";
     public static final String FRAGMENT_EXTRA_BUNDLE = "fragment_extra_bundle";

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<declare-styleable name="FragmentSwitcher">
+	<declare-styleable name="ContainerView">
 		<!--默认fragment类名-->
 		<attr name="defaultFragmentName" format="string" />
 	</declare-styleable>

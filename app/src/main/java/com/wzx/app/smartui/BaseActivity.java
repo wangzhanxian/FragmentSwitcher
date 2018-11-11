@@ -4,19 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 
-import com.wzx.app.fastui.FragmentSwitcher;
+import com.wzx.app.fastui.ContainerView;
 import com.wzx.app.fastui.SwitchHelper;
 import com.wzx.app.smartui.fragments.BaseFragment;
 
 @LayoutId(R.layout.activity_base)
 public abstract class BaseActivity extends FragmentActivity {
 
-    private FragmentSwitcher fs_switcher;
+    private ContainerView fs_switcher;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +40,7 @@ public abstract class BaseActivity extends FragmentActivity {
      */
     protected abstract String getDefaultFragmentName();
 
-    public FragmentSwitcher getSwitcher(){
+    public ContainerView getSwitcher(){
         return fs_switcher;
     }
 
