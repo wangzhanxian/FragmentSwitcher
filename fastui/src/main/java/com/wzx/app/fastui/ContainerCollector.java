@@ -19,7 +19,7 @@ public class ContainerCollector {
         containers.remove(container.getActivity());
     }
 
-    static ContainerManager getUIContainer(FragmentActivity activity) {
+    static ContainerManager getContainerManager(FragmentActivity activity) {
         return containers.get(activity);
     }
 

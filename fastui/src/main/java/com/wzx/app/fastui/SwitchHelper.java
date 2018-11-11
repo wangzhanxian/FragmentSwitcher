@@ -70,7 +70,7 @@ public class SwitchHelper {
             return false;
         }
         String hostName = card.getHostName();
-        ContainerManager container = ContainerCollector.getUIContainer(card.getCurActivity());
+        ContainerManager container = ContainerCollector.getContainerManager(card.getCurActivity());
         if (hostName.equals(card.getCurActivity().getClass().getName())) {
             if (container == null) {
                 Log.e(TAG, "the activity " + card.getCurActivity().getClass().getName() + " missing the container");

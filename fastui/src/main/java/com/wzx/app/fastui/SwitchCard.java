@@ -71,7 +71,7 @@ public class SwitchCard {
     }
 
     public SwitchCard goback(Bundle bundle) {
-        ContainerManager container = curSwitcher != null ? curSwitcher.getContainer() : ContainerCollector.getUIContainer(curActivity);
+        ContainerManager container = curSwitcher != null ? curSwitcher.getContainer() : ContainerCollector.getContainerManager(curActivity);
         targetFragment = container != null ? container.getSwitchLastFragment() : null;
         targetBundle = bundle;
         return this;
