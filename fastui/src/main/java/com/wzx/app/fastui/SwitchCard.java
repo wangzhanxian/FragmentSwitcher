@@ -9,8 +9,10 @@ import android.util.Pair;
 
 import com.wzx.app.fastui.utils.FragmentUtil;
 
+/**
+ * Describe ：切换参数封装类
+ */
 public class SwitchCard {
-
 
     private FragmentActivity curActivity;
 

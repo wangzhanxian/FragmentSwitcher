@@ -7,9 +7,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 /**
- * 给fragment配置默认的Activity，如果不配置，默认在当前Activity切换
+ * Describe ：给fragment配置启动模式，如果不配置，默认为栈内复用
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

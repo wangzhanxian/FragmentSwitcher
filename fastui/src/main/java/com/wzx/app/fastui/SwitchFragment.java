@@ -7,8 +7,10 @@ import android.view.KeyEvent;
 
 import com.wzx.app.fastui.utils.FragmentUtil;
 
+/**
+ * Describe ：自定义Fragment
+ */
 public class SwitchFragment extends Fragment {
-
 
     protected String hostName() {
         Class<? extends FragmentActivity> hostActivity = FragmentUtil.getHostActivity(this);

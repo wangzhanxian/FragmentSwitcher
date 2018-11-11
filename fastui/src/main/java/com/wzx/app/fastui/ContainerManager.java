@@ -11,6 +11,9 @@ import com.wzx.app.fastui.utils.FragmentUtil;
 
 import java.util.LinkedList;
 
+/**
+ * Describe ：容器管理者
+ */
 public class ContainerManager {
 
     private FragmentActivity activity;

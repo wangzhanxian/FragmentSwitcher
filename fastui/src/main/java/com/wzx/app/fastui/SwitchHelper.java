@@ -11,6 +11,9 @@ import android.util.Log;
 
 import com.wzx.app.fastui.utils.FragmentUtil;
 
+/**
+ * Describe ：调用入口类
+ */
 @MainThread
 public class SwitchHelper {
 

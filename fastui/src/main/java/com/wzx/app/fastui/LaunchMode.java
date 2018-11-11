@@ -5,7 +5,10 @@ import android.support.annotation.IntDef;
 import static com.wzx.app.fastui.LaunchMode.SINGLETASK;
 import static com.wzx.app.fastui.LaunchMode.STANDRAD;
 
-@IntDef({SINGLETASK,STANDRAD})
+/**
+ * Describe ：fragment启动模式
+ */
+@IntDef({SINGLETASK, STANDRAD})
 public @interface LaunchMode {
 
     /**

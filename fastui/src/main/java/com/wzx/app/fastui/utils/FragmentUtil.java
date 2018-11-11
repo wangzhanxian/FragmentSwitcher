@@ -11,6 +11,10 @@ import com.wzx.app.fastui.SwitchFragment;
 import com.wzx.app.fastui.annotions.Host;
 import com.wzx.app.fastui.annotions.Mode;
 
+/**
+ * Describe ：Fragment辅助工具类
+ * 获取所在Activity、获取配置启动模式，设置传参，获取传参
+ */
 public class FragmentUtil {
 
     public static final String FRAGMENT_CLASS_NAME = "fragment_class_name";

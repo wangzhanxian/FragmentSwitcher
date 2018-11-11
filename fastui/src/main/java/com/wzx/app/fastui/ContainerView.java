@@ -13,9 +13,10 @@ import android.widget.FrameLayout;
 
 import com.wzx.app.fastui.utils.FragmentUtil;
 
-
+/**
+ * Describe ：自定义FrameLayout
+ */
 public class ContainerView extends FrameLayout {
-
 
     private ContainerManager container;
 
@@ -111,10 +112,10 @@ public class ContainerView extends FrameLayout {
     }
 
     public boolean goback(Bundle bundle) {
-        return goback(bundle,true);
+        return goback(bundle, true);
     }
 
     public boolean goback(Bundle bundle, boolean useAnim) {
-        return SwitchHelper.with(this).goback( bundle).animEnable(useAnim).commit();
+        return SwitchHelper.with(this).goback(bundle).animEnable(useAnim).commit();
     }
 }
