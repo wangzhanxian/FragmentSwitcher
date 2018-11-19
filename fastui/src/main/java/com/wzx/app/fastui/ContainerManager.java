@@ -86,8 +86,13 @@ public class ContainerManager {
         return null;
     }
 
-    ContainerManager addToStack(SwitchFragment targetFragment, FragmentTransaction transaction) {
+    ContainerManager addToStack(SwitchFragment targetFragment) {
         stack.add(targetFragment);
+        return this;
+    }
+
+    ContainerManager addToStack(SwitchFragment targetFragment, FragmentTransaction transaction) {
+        addToStack(targetFragment);
         if (!targetFragment.isAdded()) {
             transaction.add(getContainerId(), targetFragment);
         } else {

@@ -31,7 +31,7 @@ public class A1Fragment extends BaseFragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putString("tag", "A1 fff");
-                SwitchHelper.with(mActivity).target(A2Fragment.class,bundle).finishCurrent().commit();
+                SwitchHelper.with(mActivity).target(A2Fragment.class,bundle).commit();
             }
         });
     }

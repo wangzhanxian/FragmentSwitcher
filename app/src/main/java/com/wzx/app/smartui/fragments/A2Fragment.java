@@ -8,7 +8,6 @@ import com.wzx.app.smartui.AActivity;
 import com.wzx.app.smartui.LayoutId;
 import com.wzx.app.smartui.R;
 
-@Host(AActivity.class)
 @LayoutId(R.layout.fragment_a2)
 public class A2Fragment extends BaseFragment {
     @Override

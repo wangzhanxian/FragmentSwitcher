@@ -13,6 +13,8 @@ import android.widget.FrameLayout;
 
 import com.wzx.app.fastui.utils.FragmentUtil;
 
+import java.util.List;
+
 /**
  * Describe ：自定义FrameLayout
  */
@@ -89,13 +91,34 @@ public class ContainerView extends FrameLayout {
 
     private void tryShowDefaultFragment() {
         if (isAttached && container.getStackSize() == 0) {
-            Intent intent = container.getActivity().getIntent();
-            if (FragmentUtil.hasTarget(intent)) {
-                SwitchHelper.with(container.getActivity()).target(intent).commit();
-            } else if (container.getDefaultFragmentName() != null) {
-                SwitchHelper.with(container.getActivity()).target(container.getDefaultFragmentName(), null).commit();
+            if (!tryShowRestoreStackFragment()) {
+                Intent intent = container.getActivity().getIntent();
+                if (FragmentUtil.hasTarget(intent)) {
+                    SwitchHelper.with(container.getActivity()).target(intent).commit();
+                } else if (container.getDefaultFragmentName() != null) {
+                    SwitchHelper.with(container.getActivity()).target(container.getDefaultFragmentName(), null).commit();
+                }
             }
         }
+    }
+
+    /**
+     * 尝试显示被保存的Fragment
+     * v4-24.0.0+ 开始，官方修复了上述 没有保存mHidden的问题，所以如果你在使用24.0.0+的v4包，下面分析的2个解决方案可以自行跳过...
+     * 参考文档：https://www.jianshu.com/p/d9143a92ad94
+     * @return
+     */
+    private boolean tryShowRestoreStackFragment(){
+        List<Fragment> fragments = container.getFragmentManager().getFragments();
+        if (fragments !=null && fragments.size()>0){
+            for(int i= 0;i<fragments.size();i++){
+                Fragment fragment = fragments.get(i);
+                if (fragment instanceof SwitchFragment){
+                    container.addToStack((SwitchFragment) fragment);
+                }
+            }
+        }
+        return container.getStackSize()>0;
     }
 
     public Fragment getCurFragment() {
