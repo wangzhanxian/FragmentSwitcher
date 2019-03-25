@@ -115,9 +115,14 @@ public class ContainerManager {
         return this;
     }
 
-    ContainerManager removeStack(SwitchFragment fragment) {
+    ContainerManager removeStack(SwitchFragment fragment, FragmentTransaction transaction) {
         stack.remove(fragment);
+        transaction.remove(fragment);
         return this;
     }
 
+    ContainerManager hideStack(SwitchFragment fragment, FragmentTransaction transaction) {
+        transaction.hide(fragment);
+        return this;
+    }
 }

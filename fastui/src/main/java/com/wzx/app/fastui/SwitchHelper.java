@@ -105,9 +105,9 @@ public class SwitchHelper {
             if (!switchLast) {
                 if (container.getCurFragment() != null) {
                     if (card.isFinishCurrent()) {
-                        transaction.remove(container.getCurFragment());
+                        container.removeStack(container.getCurFragment(),transaction);
                     } else {
-                        transaction.hide(container.getCurFragment());
+                        container.hideStack(container.getCurFragment(),transaction);
                     }
                 }
                 container.addToStack(card.getTargetFragment(), transaction);
