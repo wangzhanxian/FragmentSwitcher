@@ -77,9 +77,9 @@ public class ContainerManager {
     }
 
     SwitchFragment isSwitchLast(SwitchFragment fragment) {
-        boolean reuseTask = FragmentUtil.getLaunchMode(fragment) == LaunchMode.SINGLETASK;
+        boolean reuseInstance = FragmentUtil.getLaunchMode(fragment) == LaunchMode.SINGLETASK;
         for (SwitchFragment stackFragment : stack) {
-            if (stackFragment == fragment || (reuseTask && TextUtils.equals(stackFragment.getClass().getName(), fragment.getClass().getName()))) {
+            if (stackFragment == fragment || (reuseInstance && TextUtils.equals(stackFragment.getClass().getName(), fragment.getClass().getName()))) {
                 return stackFragment;
             }
         }

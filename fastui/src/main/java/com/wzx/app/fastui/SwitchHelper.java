@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.AnimRes;
 import android.support.annotation.AnimatorRes;
 import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -49,20 +50,9 @@ public class SwitchHelper {
      * @param activity
      * @return
      */
-    public static SwitchCard with(FragmentActivity activity) {
+    public static SwitchCard with(@NonNull FragmentActivity activity) {
         return new SwitchCard(activity);
     }
-
-    /**
-     * 调用入口，通过当前容器
-     *
-     * @param switcher
-     * @return
-     */
-    public static SwitchCard with(ContainerView switcher) {
-        return new SwitchCard(switcher);
-    }
-
 
     static boolean commit(final SwitchCard card) {
         if (card.getTargetFragment() == null) {
@@ -117,8 +107,8 @@ public class SwitchHelper {
             transaction.commitAllowingStateLoss();
         } else {
             if (card.isFinishCurrent()) {
-                if (container != null) {
-                    SwitchHelper.with(card.getCurActivity()).target(container.getSwitchLastFragment(), card.getTargetBundle()).animEnable(false).commit();
+                if (container != null && container.getSwitchLastFragment() != null) {
+                    SwitchHelper.with(card.getCurActivity()).target(container.getSwitchLastFragment(),null).animEnable(false).commit();
                 }
             }
             Intent intent = new Intent();

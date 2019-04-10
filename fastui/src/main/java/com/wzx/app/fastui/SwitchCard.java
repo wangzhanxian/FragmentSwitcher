@@ -35,13 +35,6 @@ public class SwitchCard {
      */
     private boolean useAnim;
 
-    private ContainerView curSwitcher;
-
-    protected SwitchCard(ContainerView switcher) {
-        this(switcher.getContainer().getActivity());
-        this.curSwitcher = switcher;
-    }
-
     protected SwitchCard(FragmentActivity curActivity) {
         this.curActivity = curActivity;
         useAnim = true;
@@ -66,28 +59,13 @@ public class SwitchCard {
         return this;
     }
 
-    public SwitchCard goback() {
-        return goback(null);
-    }
-
-    public SwitchCard goback(Bundle bundle) {
-        ContainerManager container = curSwitcher != null ? curSwitcher.getContainer() : ContainerCollector.getContainerManager(curActivity);
-        targetFragment = container != null ? container.getSwitchLastFragment() : null;
-        targetBundle = bundle;
-        return this;
-    }
-
     boolean isUseAnim() {
         return useAnim;
     }
 
     String getHostName() {
-        String hostName = targetFragment.hostName();
+        String hostName = targetFragment != null ? targetFragment.hostName():null;
         return hostName == null ? curActivity.getClass().getName() : hostName;
-    }
-
-    ContainerView getCurSwitcher() {
-        return curSwitcher;
     }
 
     FragmentActivity getCurActivity() {

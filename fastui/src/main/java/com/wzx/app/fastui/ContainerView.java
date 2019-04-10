@@ -139,6 +139,9 @@ public class ContainerView extends FrameLayout {
     }
 
     public boolean goback(Bundle bundle, boolean useAnim) {
-        return SwitchHelper.with(this).goback(bundle).animEnable(useAnim).commit();
+        if (container.getSwitchLastFragment() != null) {
+            return SwitchHelper.with(container.getActivity()).target(container.getSwitchLastFragment(), bundle).animEnable(useAnim).commit();
+        }
+        return false;
     }
 }

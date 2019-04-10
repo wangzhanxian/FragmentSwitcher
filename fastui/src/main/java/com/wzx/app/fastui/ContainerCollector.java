@@ -2,14 +2,14 @@ package com.wzx.app.fastui;
 
 import android.support.v4.app.FragmentActivity;
 
-import java.util.HashMap;
+import java.util.WeakHashMap;
 
 /**
  * Describe ：容器集合
  */
 public class ContainerCollector {
 
-    private static HashMap<FragmentActivity, ContainerManager> containers = new HashMap<>();
+    private static WeakHashMap<FragmentActivity, ContainerManager> containers = new WeakHashMap<>();
 
     static void add(ContainerManager container) {
         containers.put(container.getActivity(), container);
